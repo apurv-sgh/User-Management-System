@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const inputStyle = {
   width: '100%', padding: '9px 12px', border: '1px solid hsl(214.3, 31.8%, 85%)',
@@ -49,7 +50,10 @@ export default function ProfilePage() {
       setForm(f => ({ ...f, currentPassword: '', password: '' }));
       setMessage({ type: 'success', text: 'Profile updated successfully.' });
     } catch (err) {
-      setMessage({ type: 'error', text: err.response?.data?.error || 'Failed to update profile.' });
+      setMessage({
+        type: 'error',
+        text: getErrorMessage(err)
+      });
     } finally {
       setSaving(false);
     }

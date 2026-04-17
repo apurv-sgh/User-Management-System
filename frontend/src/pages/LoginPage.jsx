@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Loader2 } from 'lucide-react';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -10,7 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -18,7 +19,7 @@ export default function LoginPage() {
       const user = await login(form.email, form.password);
       navigate(user.role === 'user' ? '/profile' : '/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

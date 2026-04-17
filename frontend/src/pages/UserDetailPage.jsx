@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, Loader2, User as UserIcon, Mail, Shield, Clock } from 'lucide-react';
 import { format } from 'date-fns';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const inputStyle = { width: '100%', padding: '8px 11px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13.5px', outline: 'none', background: '#fff' };
 const labelStyle = { display: 'block', fontSize: '13px', fontWeight: 500, marginBottom: '5px' };
@@ -23,7 +24,7 @@ export default function UserDetailPage() {
   useEffect(() => {
     api.get(`/users/${id}`)
       .then(res => { setUser(res.data); setForm({ name: res.data.name, email: res.data.email, role: res.data.role, status: res.data.status }); })
-      .catch(err => setError(err.response?.data?.error || 'User not found'))
+      .catch(err => setError(getErrorMessage(err)))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -44,7 +45,10 @@ export default function UserDetailPage() {
       setIsEditing(false);
       setMessage({ type: 'success', text: 'User updated successfully.' });
     } catch (err) {
-      setMessage({ type: 'error', text: err.response?.data?.error || 'Failed to update user.' });
+      setMessage({
+        type: 'error',
+        text: getErrorMessage(err)
+      });
     } finally {
       setSaving(false);
     }

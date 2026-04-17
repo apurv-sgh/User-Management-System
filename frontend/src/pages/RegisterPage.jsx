@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Loader2 } from 'lucide-react';
+import { getErrorMessage } from '../utils/errorHandler';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -22,7 +23,7 @@ export default function RegisterPage() {
       await register(form.name, form.email, form.password);
       navigate('/profile');
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Search, Plus, MoreHorizontal, Loader2, Filter, Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import {getErrorMessage} from '../utils/errorHandler';
 
 const ROLE_COLORS = {
   admin: { bg: '#fef2f2', color: '#b91c1c', border: '#fecaca' },
@@ -66,7 +67,7 @@ export default function UsersPage() {
   const handleSearch = (e) => { e.preventDefault(); setSearch(searchInput); setPage(1); };
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
-    try { await api.delete(`/users/${id}`); fetchUsers(); } catch (err) { alert(err.response?.data?.error || 'Failed to delete user'); }
+    try { await api.delete(`/users/${id}`); fetchUsers(); } catch (err) {  alert(getErrorMessage(err)); }
   };
   const canManage = (targetRole) => user?.role === 'admin' || (user?.role === 'manager' && targetRole !== 'admin');
 
